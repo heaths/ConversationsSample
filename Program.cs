@@ -31,10 +31,11 @@ command.Handler = CommandHandler.Create<Options>(async options =>
         kind = "Conversation",
     };
 
+    // Use Conversation Analysis to recognize entities.
     var response = await conversationClient.AnalyzeConversationAsync(RequestContent.Create(request));
-    dynamic json = JsonData.FromStream(response.ContentStream);
 
     Console.WriteLine("Conversation Analysis recognized:");
+    dynamic json = JsonData.FromStream(response.ContentStream);
     foreach (var entity in json.result.prediction.entities)
     {
         Console.WriteLine($"{entity.category}: {entity.text}");
@@ -42,6 +43,8 @@ command.Handler = CommandHandler.Create<Options>(async options =>
     Console.WriteLine();
 
     TextAnalyticsClient textAnalyticsClient = new(options.Endpoint, credential);
+
+    // Use Text Analytics to recognize entities.
     CategorizedEntityCollection entities = await textAnalyticsClient.RecognizeEntitiesAsync(options.Question);
 
     Console.WriteLine("Text Analytics recognized:");
